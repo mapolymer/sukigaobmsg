@@ -477,8 +477,8 @@
 
     <!-- 診断画面 -->
     <div id="quiz-screen" style="text-align: center;">
-      <span class="phase-badge" id="phase-badge">🔥 予選：4名から上位2名を選抜</span>
-      <div class="instruction" id="instruction-text">好みの「1位」と「2位」を順番にタップ！</div>
+      <span class="phase-badge" id="phase-badge">🔥 予選：4名から上位を選抜</span>
+      <div class="instruction" id="instruction-text">好みの「1位」（必要なら「2位」も）をタップ！</div>
       
       <!-- 予選：4人選択エリア -->
       <div id="grid-4-container" class="grid-4"></div>
@@ -630,8 +630,8 @@
       document.getElementById("vs-container").classList.add("hidden");
       document.getElementById("preliminary-btns").classList.remove("hidden");
       document.getElementById("final-btns").classList.add("hidden");
-      document.getElementById("phase-badge").innerText = "🔥 予選：4名から上位2名を選抜";
-      document.getElementById("instruction-text").innerText = "好みの「1位」と「2位」を順番にタップ！";
+      document.getElementById("phase-badge").innerText = "🔥 予選：4名から上位を選抜";
+      document.getElementById("instruction-text").innerText = "好みの「1位」（必要なら「2位」も）をタップ！";
 
       nextMatch();
     }
@@ -732,7 +732,8 @@
         }
       });
 
-      document.getElementById("confirm-btn").disabled = !(selected1st !== null && selected2nd !== null);
+      // 1位だけでも選ばれていれば「決定して次へ」ボタンを押せるように改善
+      document.getElementById("confirm-btn").disabled = (selected1st === null);
     }
 
     function reset4Selection() {
@@ -742,17 +743,22 @@
     }
 
     function confirm4Selection() {
-      if (selected1st === null || selected2nd === null) return;
+      if (selected1st === null) return;
 
+      // 1位のメンバーに加点
       current4Group[selected1st].score += 3;
-      current4Group[selected2nd].score += 1;
+
+      // 2位も選択されている場合は2位にも加点
+      if (selected2nd !== null) {
+        current4Group[selected2nd].score += 1;
+      }
 
       current4Group.forEach(m => m.appearCount++);
 
       nextMatch();
     }
 
-    /* 予選スキップ機能 */
+    /* 予選全員スキップ機能 */
     function skip4Selection() {
       current4Group.forEach(m => m.appearCount++);
       nextMatch();
