@@ -20,8 +20,8 @@
       flex-direction: column;
       align-items: center;
     }
-    h1 { font-size: 1.4rem; margin-bottom: 8px; text-align: center; }
-    p { font-size: 0.85rem; color: #666; margin-bottom: 20px; text-align: center; }
+    h1 { font-size: 1.4rem; margin-bottom: 4px; text-align: center; }
+    p.sub-title { font-size: 0.85rem; color: #666; margin-bottom: 16px; text-align: center; }
     
     .container {
       width: 100%;
@@ -30,6 +30,18 @@
       padding: 20px;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      box-sizing: border-box;
+    }
+
+    .phase-badge {
+      display: inline-block;
+      background: var(--bmsg-gold);
+      color: white;
+      font-size: 0.75rem;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 12px;
     }
 
     /* 対戦カード */
@@ -37,11 +49,11 @@
       display: flex;
       gap: 12px;
       justify-content: center;
-      margin-bottom: 20px;
+      margin-bottom: 12px;
     }
     .card {
       flex: 1;
-      height: 130px;
+      height: 120px;
       background: var(--bmsg-black);
       color: white;
       border-radius: 8px;
@@ -69,7 +81,28 @@
       font-weight: bold;
     }
 
-    /* TOP5 表示スタイル */
+    /* ボタンエリア */
+    .action-btns {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+    .action-btn {
+      flex: 1;
+      padding: 10px;
+      background: #e4e4e7;
+      color: #333;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .action-btn:hover {
+      background: #d4d4d8;
+    }
+
+    /* TOP5 表示 */
     .top5-list {
       display: flex;
       flex-direction: column;
@@ -123,21 +156,29 @@
 
   <div class="container">
     <h1>BMSG 好き顔 TOP5 診断</h1>
-    <p>直感で好みの顔・雰囲気のメンバーを選んでください！</p>
+    <p class="sub-title">予選（各グループ）→ 本選（決勝）で決定！</p>
 
     <!-- 診断画面 -->
-    <div id="quiz-screen">
+    <div id="quiz-screen" style="text-align: center;">
+      <span class="phase-badge" id="phase-badge">予選: BE:FIRST編</span>
+      
       <div class="vs-container">
-        <div id="card-a" class="card" onclick="selectMember(0)">
+        <div id="card-a" class="card" onclick="selectMember('a')">
           <span class="group" id="group-a">-</span>
           <span class="name" id="name-a">-</span>
         </div>
-        <div id="card-b" class="card" onclick="selectMember(1)">
+        <div id="card-b" class="card" onclick="selectMember('b')">
           <span class="group" id="group-b">-</span>
           <span class="name" id="name-b">-</span>
         </div>
       </div>
-      <p id="progress" style="text-align: center;">進行度: 0 / 20</p>
+
+      <div class="action-btns">
+        <button class="action-btn" onclick="selectMember('both')">どちらも好き！</button>
+        <button class="action-btn" onclick="selectMember('skip')">どちらもスキップ</button>
+      </div>
+
+      <p id="progress" style="font-size: 0.85rem; color: #666; margin: 0;">進行度: 0 / 0</p>
     </div>
 
     <!-- 結果画面（TOP5） -->
@@ -149,106 +190,148 @@
   </div>
 
   <script>
-    // BMSG メンバー完全版リスト（全48名）
-    const members = [
+    const rawMembers = [
       // BE:FIRST (7)
-      { name: "SOTA", group: "BE:FIRST" },
-      { name: "SHUNTO", group: "BE:FIRST" },
-      { name: "MANATO", group: "BE:FIRST" },
-      { name: "RYUHEI", group: "BE:FIRST" },
-      { name: "JUNON", group: "BE:FIRST" },
-      { name: "RYOKI", group: "BE:FIRST" },
+      { name: "SOTA", group: "BE:FIRST" }, { name: "SHUNTO", group: "BE:FIRST" },
+      { name: "MANATO", group: "BE:FIRST" }, { name: "RYUHEI", group: "BE:FIRST" },
+      { name: "JUNON", group: "BE:FIRST" }, { name: "RYOKI", group: "BE:FIRST" },
       { name: "LEO", group: "BE:FIRST" },
       // MAZZEL (8)
-      { name: "KAIRYU", group: "MAZZEL" },
-      { name: "NAOYA", group: "MAZZEL" },
-      { name: "RAN", group: "MAZZEL" },
-      { name: "SEITO", group: "MAZZEL" },
-      { name: "RYUKI", group: "MAZZEL" },
-      { name: "TAKUTO", group: "MAZZEL" },
-      { name: "HAYATO", group: "MAZZEL" },
-      { name: "EIKI", group: "MAZZEL" },
+      { name: "KAIRYU", group: "MAZZEL" }, { name: "NAOYA", group: "MAZZEL" },
+      { name: "RAN", group: "MAZZEL" }, { name: "SEITO", group: "MAZZEL" },
+      { name: "RYUKI", group: "MAZZEL" }, { name: "TAKUTO", group: "MAZZEL" },
+      { name: "HAYATO", group: "MAZZEL" }, { name: "EIKI", group: "MAZZEL" },
       // STARGLOW (5)
-      { name: "RUI", group: "STARGLOW" },
-      { name: "TAIKI", group: "STARGLOW" },
-      { name: "KANON", group: "STARGLOW" },
-      { name: "GOICHI", group: "STARGLOW" },
+      { name: "RUI", group: "STARGLOW" }, { name: "TAIKI", group: "STARGLOW" },
+      { name: "KANON", group: "STARGLOW" }, { name: "GOICHI", group: "STARGLOW" },
       { name: "ADAM", group: "STARGLOW" },
-      // BMSG TRAINEE (20)
-      { name: "YUTA", group: "TRAINEE" },
-      { name: "KEI", group: "TRAINEE" },
-      { name: "RAIKI", group: "TRAINEE" },
-      { name: "TAICHI", group: "TRAINEE" },
-      { name: "KANTA", group: "TRAINEE" },
-      { name: "REN", group: "TRAINEE" },
-      { name: "KAIRI", group: "TRAINEE" },
-      { name: "KEITO", group: "TRAINEE" },
-      { name: "COTA", group: "TRAINEE" },
-      { name: "RYOMA", group: "TRAINEE" },
-      { name: "AOI", group: "TRAINEE" },
-      { name: "HAL", group: "TRAINEE" },
-      { name: "YU", group: "TRAINEE" },
-      { name: "KEISHIN", group: "TRAINEE" },
-      { name: "RYOTO", group: "TRAINEE" },
-      { name: "ISANA", group: "TRAINEE" },
-      { name: "LEON", group: "TRAINEE" },
-      { name: "KAITO", group: "TRAINEE" },
-      { name: "TOMOKI", group: "TRAINEE" },
-      { name: "REN.N", group: "TRAINEE" },
-      { name: "YAMATO", group: "TRAINEE" },
-      { name: "MITSUHIKO", group: "TRAINEE" },
+      // TRAINEE (20)
+      { name: "YUTA", group: "TRAINEE" }, { name: "KEI", group: "TRAINEE" },
+      { name: "RAIKI", group: "TRAINEE" }, { name: "TAICHI", group: "TRAINEE" },
+      { name: "KANTA", group: "TRAINEE" }, { name: "REN", group: "TRAINEE" },
+      { name: "KAIRI", group: "TRAINEE" }, { name: "KEITO", group: "TRAINEE" },
+      { name: "COTA", group: "TRAINEE" }, { name: "RYOMA", group: "TRAINEE" },
+      { name: "AOI", group: "TRAINEE" }, { name: "HAL", group: "TRAINEE" },
+      { name: "YU", group: "TRAINEE" }, { name: "KEISHIN", group: "TRAINEE" },
+      { name: "RYOTO", group: "TRAINEE" }, { name: "ISANA", group: "TRAINEE" },
+      { name: "LEON", group: "TRAINEE" }, { name: "KAITO", group: "TRAINEE" },
+      { name: "TOMOKI", group: "TRAINEE" }, { name: "REN.N", group: "TRAINEE" },
+      { name: "YAMATO", group: "TRAINEE" }, { name: "MITSUHIKO", group: "TRAINEE" },
       { name: "TERUHIKO", group: "TRAINEE" },
-      // SOLO / BMSG関連アーティスト (8)
-      { name: "Novel Core", group: "SOLO" },
-      { name: "Aile The Shota", group: "SOLO" },
-      { name: "edhiii boi", group: "SOLO" },
-      { name: "REIKO", group: "SOLO" },
-      { name: "Ayumu Imazu", group: "SOLO" },
-      { name: "banvox", group: "SOLO" },
-      { name: "SALU", group: "SOLO" },
-      { name: "SKY-HI", group: "BMSG" }
+      // SOLO / BMSG (8)
+      { name: "Novel Core", group: "SOLO" }, { name: "Aile The Shota", group: "SOLO" },
+      { name: "edhiii boi", group: "SOLO" }, { name: "REIKO", group: "SOLO" },
+      { name: "Ayumu Imazu", group: "SOLO" }, { name: "banvox", group: "SOLO" },
+      { name: "SALU", group: "SOLO" }, { name: "SKY-HI", group: "BMSG" }
     ];
 
-    let currentMatch = 0;
-    const totalMatches = 20; // 選択回数
-    let scores = {};
+    const groups = ["BE:FIRST", "MAZZEL", "STARGLOW", "TRAINEE", "SOLO/BMSG"];
+    let currentGroupIndex = 0;
+    let currentPhase = "preliminary"; // "preliminary" または "final"
+    let currentPool = [];
+    let finalists = [];
     let pair = [];
+    let matchCount = 0;
+    let maxMatches = 0;
+    const K = 32;
 
     function startQuiz() {
-      currentMatch = 0;
-      scores = {};
-      members.forEach(m => scores[m.name] = 0);
+      currentGroupIndex = 0;
+      currentPhase = "preliminary";
+      finalists = [];
       document.getElementById("quiz-screen").classList.remove("hidden");
       document.getElementById("result-screen").classList.add("hidden");
+      startGroupPreliminary();
+    }
+
+    // 予選グループ開始
+    function startGroupPreliminary() {
+      const gName = groups[currentGroupIndex];
+      document.getElementById("phase-badge").innerText = `予選: ${gName}編`;
+      
+      // 該当グループのメンバー抽出
+      let filterGroup = gName === "SOLO/BMSG" ? ["SOLO", "BMSG"] : [gName];
+      currentPool = rawMembers
+        .filter(m => filterGroup.includes(m.group))
+        .map(m => ({ ...m, rating: 1500 }));
+
+      matchCount = 0;
+      // 人数に応じて対戦数を調整
+      maxMatches = Math.min(Math.ceil(currentPool.length * 1.2), 8);
+      nextMatch();
+    }
+
+    // 本選（ファイナル）開始
+    function startFinal() {
+      currentPhase = "final";
+      document.getElementById("phase-badge").innerText = `🔥 最終決定戦（ファイナル）`;
+      
+      // 決勝プール初期化（レートリセット）
+      currentPool = finalists.map(m => ({ ...m, rating: 1500 }));
+      matchCount = 0;
+      maxMatches = 10; // 決勝10試合
       nextMatch();
     }
 
     function nextMatch() {
-      if (currentMatch >= totalMatches) {
-        showResult();
+      if (matchCount >= maxMatches) {
+        if (currentPhase === "preliminary") {
+          // 予選通過者を選出（上位2〜3名）
+          currentPool.sort((a, b) => b.rating - a.rating);
+          const passCount = groups[currentGroupIndex] === "TRAINEE" ? 3 : 2;
+          finalists.push(...currentPool.slice(0, passCount));
+
+          currentGroupIndex++;
+          if (currentGroupIndex < groups.length) {
+            startGroupPreliminary();
+          } else {
+            startFinal();
+          }
+        } else {
+          showResult();
+        }
         return;
       }
 
-      let idx1 = Math.floor(Math.random() * members.length);
+      // ランダムペア抽出
+      let idx1 = Math.floor(Math.random() * currentPool.length);
       let idx2;
       do {
-        idx2 = Math.floor(Math.random() * members.length);
+        idx2 = Math.floor(Math.random() * currentPool.length);
       } while (idx1 === idx2);
 
-      pair = [members[idx1], members[idx2]];
+      pair = [currentPool[idx1], currentPool[idx2]];
 
       document.getElementById("group-a").innerText = pair[0].group;
       document.getElementById("name-a").innerText = pair[0].name;
       document.getElementById("group-b").innerText = pair[1].group;
       document.getElementById("name-b").innerText = pair[1].name;
 
-      currentMatch++;
-      document.getElementById("progress").innerText = `進行度: ${currentMatch} / ${totalMatches}`;
+      matchCount++;
+      document.getElementById("progress").innerText = `進行度: ${matchCount} / ${maxMatches}`;
     }
 
-    function selectMember(index) {
-      const selected = pair[index];
-      scores[selected.name] += 1;
+    function selectMember(action) {
+      const p1 = pair[0];
+      const p2 = pair[1];
+      const Ra = p1.rating;
+      const Rb = p2.rating;
+      const Ea = 1 / (1 + Math.pow(10, (Rb - Ra) / 400));
+      const Eb = 1 / (1 + Math.pow(10, (Ra - Rb) / 400));
+
+      if (action === 'a') {
+        p1.rating = Ra + K * (1 - Ea);
+        p2.rating = Rb + K * (0 - Eb);
+      } else if (action === 'b') {
+        p1.rating = Ra + K * (0 - Ea);
+        p2.rating = Rb + K * (1 - Eb);
+      } else if (action === 'both') {
+        // 両者に加点（引き分け処理）
+        p1.rating = Ra + K * (0.5 - Ea);
+        p2.rating = Rb + K * (0.5 - Eb);
+      }
+      // 'skip' はレート変動なし
+
       nextMatch();
     }
 
@@ -256,19 +339,13 @@
       document.getElementById("quiz-screen").classList.add("hidden");
       document.getElementById("result-screen").classList.remove("hidden");
 
-      const sorted = Object.keys(scores)
-        .map(name => ({
-          name: name,
-          score: scores[name],
-          group: members.find(m => m.name === name).group
-        }))
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 5); // TOP5
+      currentPool.sort((a, b) => b.rating - a.rating);
+      const top5 = currentPool.slice(0, 5);
 
       const top5Container = document.getElementById("top5-container");
       top5Container.innerHTML = "";
 
-      sorted.forEach((item, index) => {
+      top5.forEach((item, index) => {
         const div = document.createElement("div");
         div.className = "top5-item";
         div.innerHTML = `
