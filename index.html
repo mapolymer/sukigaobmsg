@@ -102,7 +102,6 @@
       box-shadow: 0 0 12px rgba(197, 160, 89, 0.4);
     }
 
-    /* 対戦カード（スマホ最適化） */
     .vs-container {
       display: flex;
       gap: 10px;
@@ -171,7 +170,6 @@
       word-break: break-word;
     }
 
-    /* ボタン */
     .action-btns {
       display: flex;
       gap: 10px;
@@ -313,7 +311,7 @@
 
     <!-- 診断画面 -->
     <div id="quiz-screen" style="text-align: center;">
-      <span class="phase-badge" id="phase-badge">予選: BE:FIRST編</span>
+      <span class="phase-badge" id="phase-badge">🔥 予選：無差別ランダム総当たり</span>
       
       <div class="vs-container">
         <div id="card-a" class="card" onclick="selectMember('a')">
@@ -341,7 +339,7 @@
         <button class="action-btn" onclick="selectMember('skip')">パス / スキップ</button>
       </div>
 
-      <p id="progress" style="font-size: 0.8rem; color: #888888; margin: 0; font-weight: 700;">MATCH: 0 / 0</p>
+      <p id="progress" style="font-size: 0.8rem; color: #888888; margin: 0; font-weight: 700;">MATCH: 0 / 30</p>
     </div>
 
     <!-- 結果画面（TOP5） -->
@@ -411,75 +409,57 @@
       { name: "SKY-HI", group: "BMSG", img: "skyhi.jpg" }
     ];
 
-    const groups = ["BE:FIRST", "MAZZEL", "STARGLOW", "TRAINEE", "SOLO/BMSG"];
-    let currentGroupIndex = 0;
-    let currentPhase = "preliminary";
-    let currentPool = [];
-    let finalists = [];
+    let currentPhase = "preliminary"; // "preliminary" -> "final"
+    let pool = [];
     let pair = [];
     let matchCount = 0;
-    let maxMatches = 0;
+    let maxMatches = 30; // 予選はたっぷり30試合で判定
     const K = 32;
 
     function startQuiz() {
-      currentGroupIndex = 0;
       currentPhase = "preliminary";
-      finalists = [];
+      matchCount = 0;
+      maxMatches = 30;
+      pool = rawMembers.map(m => ({ ...m, rating: 1500 }));
+      
       document.getElementById("quiz-screen").classList.remove("hidden");
       document.getElementById("result-screen").classList.add("hidden");
-      startGroupPreliminary();
-    }
-
-    function startGroupPreliminary() {
-      const gName = groups[currentGroupIndex];
-      document.getElementById("phase-badge").innerText = `予選: ${gName}編`;
+      document.getElementById("phase-badge").innerText = "🔥 予選：無差別ランダム総当たり";
       
-      let filterGroup = gName === "SOLO/BMSG" ? ["SOLO", "BMSG"] : [gName];
-      currentPool = rawMembers
-        .filter(m => filterGroup.includes(m.group))
-        .map(m => ({ ...m, rating: 1500 }));
-
-      matchCount = 0;
-      maxMatches = Math.min(Math.ceil(currentPool.length * 1.2), 8);
       nextMatch();
     }
 
     function startFinal() {
       currentPhase = "final";
-      document.getElementById("phase-badge").innerText = `🔥 最終決定戦（ファイナル）`;
-      
-      currentPool = finalists.map(m => ({ ...m, rating: 1500 }));
       matchCount = 0;
-      maxMatches = 10;
+      maxMatches = 10; // 本選は上位8名で10試合じっくり選抜
+
+      // 予選上位8名を抽出してレートをリセット
+      pool.sort((a, b) => b.rating - a.rating);
+      pool = pool.slice(0, 8).map(m => ({ ...m, rating: 1500 }));
+
+      document.getElementById("phase-badge").innerText = "✨ 本選：予選上位8名による最終選抜";
       nextMatch();
     }
 
     function nextMatch() {
       if (matchCount >= maxMatches) {
         if (currentPhase === "preliminary") {
-          currentPool.sort((a, b) => b.rating - a.rating);
-          const passCount = groups[currentGroupIndex] === "TRAINEE" ? 3 : 2;
-          finalists.push(...currentPool.slice(0, passCount));
-
-          currentGroupIndex++;
-          if (currentGroupIndex < groups.length) {
-            startGroupPreliminary();
-          } else {
-            startFinal();
-          }
+          startFinal();
         } else {
           showResult();
         }
         return;
       }
 
-      let idx1 = Math.floor(Math.random() * currentPool.length);
+      // ランダムペアリング
+      let idx1 = Math.floor(Math.random() * pool.length);
       let idx2;
       do {
-        idx2 = Math.floor(Math.random() * currentPool.length);
+        idx2 = Math.floor(Math.random() * pool.length);
       } while (idx1 === idx2);
 
-      pair = [currentPool[idx1], currentPool[idx2]];
+      pair = [pool[idx1], pool[idx2]];
 
       setCardData('a', pair[0]);
       setCardData('b', pair[1]);
@@ -526,8 +506,8 @@
       document.getElementById("quiz-screen").classList.add("hidden");
       document.getElementById("result-screen").classList.remove("hidden");
 
-      currentPool.sort((a, b) => b.rating - a.rating);
-      const top5 = currentPool.slice(0, 5);
+      pool.sort((a, b) => b.rating - a.rating);
+      const top5 = pool.slice(0, 5);
 
       const top5Container = document.getElementById("top5-container");
       top5Container.innerHTML = "";
