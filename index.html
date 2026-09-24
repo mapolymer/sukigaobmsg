@@ -67,27 +67,27 @@
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--glass-border);
       border-radius: 20px;
-      padding: 20px 14px;
+      padding: 18px 12px;
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
       position: relative;
       z-index: 1;
     }
 
     h1 {
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       font-weight: 800;
       text-align: center;
       background: linear-gradient(135deg, #ffffff 0%, var(--gold-1) 50%, var(--gold-2) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     p.sub-title {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       color: #aaaaaa;
       text-align: center;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .phase-badge {
@@ -96,20 +96,125 @@
       color: #fff;
       font-size: 0.75rem;
       font-weight: 700;
-      padding: 6px 16px;
+      padding: 6px 14px;
       border-radius: 50px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       box-shadow: 0 0 12px rgba(197, 160, 89, 0.4);
     }
 
+    .instruction {
+      font-size: 0.8rem;
+      color: #ffd700;
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    /* 予選 4人グリッド */
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .card-4 {
+      background: rgba(10, 10, 12, 0.85);
+      border: 2px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+      overflow: hidden;
+    }
+
+    .card-4.selected-1st {
+      border-color: var(--gold-1);
+      box-shadow: 0 0 12px rgba(255, 229, 153, 0.6);
+      background: rgba(45, 38, 20, 0.9);
+    }
+
+    .card-4.selected-2nd {
+      border-color: #c0c0c0;
+      box-shadow: 0 0 10px rgba(192, 192, 192, 0.5);
+      background: rgba(30, 35, 40, 0.9);
+    }
+
+    .badge-selection {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 10px;
+      z-index: 3;
+      display: none;
+    }
+
+    .selected-1st .badge-selection {
+      display: block;
+      background: var(--gold-1);
+      color: #000;
+    }
+
+    .selected-2nd .badge-selection {
+      display: block;
+      background: #c0c0c0;
+      color: #000;
+    }
+
+    .card-4 .img-box {
+      width: 100%;
+      height: 125px;
+      background: #18181c;
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-4 img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+    }
+
+    .card-4 .info-box {
+      margin-top: 6px;
+      text-align: center;
+      width: 100%;
+    }
+
+    .card-4 .group {
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: var(--gold-2);
+      display: block;
+    }
+
+    .card-4 .name {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #ffffff;
+      word-break: break-word;
+    }
+
+    /* 本選 2人VS */
     .vs-container {
       display: flex;
       gap: 10px;
       justify-content: center;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
-    .card {
+    .card-2 {
       flex: 1;
       background: rgba(10, 10, 12, 0.85);
       border: 1px solid rgba(255, 255, 255, 0.12);
@@ -120,92 +225,91 @@
       cursor: pointer;
       transition: all 0.2s ease;
       padding: 8px;
-      overflow: hidden;
     }
 
-    .card:active {
+    .card-2:active {
       transform: scale(0.97);
       border-color: var(--gold-2);
     }
 
-    .card .img-box {
+    .card-2 .img-box {
       width: 100%;
-      height: 200px;
+      height: 190px;
       background: #18181c;
       border-radius: 10px;
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #555;
-      font-size: 0.75rem;
     }
 
-    .card img {
+    .card-2 img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       object-position: top center;
     }
 
-    .card .info-box {
-      margin-top: 10px;
-      margin-bottom: 4px;
+    .card-2 .info-box {
+      margin-top: 8px;
       text-align: center;
-      width: 100%;
     }
 
-    .card .group {
+    .card-2 .group {
       font-size: 0.65rem;
       font-weight: 700;
       color: var(--gold-2);
       display: block;
-      margin-bottom: 2px;
     }
 
-    .card .name {
-      font-size: 1.05rem;
+    .card-2 .name {
+      font-size: 1rem;
       font-weight: 800;
       color: #ffffff;
-      word-break: break-word;
     }
 
     .action-btns {
       display: flex;
       gap: 10px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .action-btn {
       flex: 1;
-      padding: 12px 8px;
+      padding: 10px 8px;
       background: rgba(255, 255, 255, 0.08);
       color: #ffffff;
       border: 1px solid rgba(255, 255, 255, 0.18);
       border-radius: 10px;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 700;
       cursor: pointer;
     }
 
-    .action-btn:active {
-      background: rgba(197, 160, 89, 0.3);
-      border-color: var(--gold-2);
+    .action-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
     }
 
-    /* プログレスバーエリア */
+    .action-btn.confirm-btn {
+      background: linear-gradient(135deg, var(--gold-2), var(--gold-3));
+      color: #fff;
+      border: none;
+    }
+
+    /* プログレスバー */
     .progress-box {
       width: 100%;
-      margin-top: 8px;
+      margin-top: 6px;
     }
 
     .progress-info {
       display: flex;
       justify-content: space-between;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       color: #aaaaaa;
       font-weight: 700;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .progress-bar-bg {
@@ -229,15 +333,15 @@
     .top5-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-top: 16px;
+      gap: 10px;
+      margin-top: 14px;
     }
 
     .top5-card {
       background: rgba(20, 20, 25, 0.95);
       border: 1px solid rgba(197, 160, 89, 0.3);
       border-radius: 14px;
-      padding: 10px;
+      padding: 8px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -245,11 +349,13 @@
       overflow: hidden;
     }
 
+    /* 1位専用枠：高さ260px & object-fit: contain で顔を完璧に収める */
     .top5-card.rank-1 {
       grid-column: span 2;
       border-color: var(--gold-1);
-      box-shadow: 0 0 15px rgba(255, 229, 153, 0.25);
-      background: linear-gradient(180deg, rgba(35, 30, 20, 0.95) 0%, rgba(20, 20, 25, 0.95) 100%);
+      box-shadow: 0 0 18px rgba(255, 229, 153, 0.35);
+      background: linear-gradient(180deg, rgba(40, 32, 18, 0.95) 0%, rgba(20, 20, 25, 0.95) 100%);
+      padding: 12px;
     }
 
     .top5-rank-badge {
@@ -258,7 +364,7 @@
       left: 8px;
       background: linear-gradient(135deg, var(--gold-2), var(--gold-3));
       color: #fff;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 800;
       padding: 2px 8px;
       border-radius: 12px;
@@ -269,22 +375,24 @@
       background: linear-gradient(135deg, #ffffff, var(--gold-1));
       color: #000;
       font-size: 0.85rem;
+      padding: 4px 10px;
     }
 
     .top5-img-box {
       width: 100%;
-      height: 140px;
+      height: 130px;
       border-radius: 10px;
       overflow: hidden;
       background: #111;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .rank-1 .top5-img-box {
-      height: 200px;
+      height: 260px;
+      background: #0d0d10;
     }
 
     .top5-img-box img {
@@ -294,66 +402,67 @@
       object-position: top center;
     }
 
+    .rank-1 .top5-img-box img {
+      object-fit: contain;
+    }
+
     .top5-info {
       text-align: center;
       width: 100%;
     }
 
     .top5-group {
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       color: var(--gold-2);
       font-weight: 700;
       display: block;
-      margin-bottom: 2px;
     }
 
     .top5-name {
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 800;
       color: #ffffff;
       word-break: break-word;
     }
 
     .rank-1 .top5-name {
-      font-size: 1.15rem;
+      font-size: 1.2rem;
+      color: var(--gold-1);
     }
 
     .hidden { display: none !important; }
     
     .share-btn {
       width: 100%;
-      padding: 14px;
+      padding: 12px;
       background: #000000;
       color: #ffffff;
       border: 1px solid rgba(255, 255, 255, 0.3);
       border-radius: 12px;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 800;
       cursor: pointer;
-      margin-top: 18px;
+      margin-top: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-      transition: all 0.2s ease;
     }
 
     .share-btn:active {
       transform: scale(0.98);
-      background: #111111;
     }
 
     button.reset-btn {
       width: 100%;
-      padding: 12px;
+      padding: 10px;
       background: transparent;
       color: #aaaaaa;
       border: none;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 700;
       cursor: pointer;
-      margin-top: 8px;
+      margin-top: 6px;
       text-decoration: underline;
     }
   </style>
@@ -362,14 +471,19 @@
 
   <div class="container">
     <h1>BMSG 好き顔 TOP5</h1>
-    <p class="sub-title">PRELIMINARY ➔ FINAL DIAGNOSIS</p>
+    <p class="sub-title">PRELIMINARY (40Q) ➔ FINAL (20Q)</p>
 
     <!-- 診断画面 -->
     <div id="quiz-screen" style="text-align: center;">
-      <span class="phase-badge" id="phase-badge">🔥 予選：無差別ランダム総当たり</span>
+      <span class="phase-badge" id="phase-badge">🔥 予選：4名から1位と2位を選択</span>
+      <div class="instruction" id="instruction-text">好みの「1位」と「2位」を順番にタップ！</div>
       
-      <div class="vs-container">
-        <div id="card-a" class="card" onclick="selectMember('a')">
+      <!-- 予選：4人選択エリア -->
+      <div id="grid-4-container" class="grid-4"></div>
+
+      <!-- 本選：2人VSエリア -->
+      <div id="vs-container" class="vs-container hidden">
+        <div id="card-a" class="card-2" onclick="selectFinalMember('a')">
           <div class="img-box">
             <img id="img-a" src="" alt="" style="display:none;" onerror="this.style.display='none';">
           </div>
@@ -378,7 +492,7 @@
             <span class="name" id="name-a">-</span>
           </div>
         </div>
-        <div id="card-b" class="card" onclick="selectMember('b')">
+        <div id="card-b" class="card-2" onclick="selectFinalMember('b')">
           <div class="img-box">
             <img id="img-b" src="" alt="" style="display:none;" onerror="this.style.display='none';">
           </div>
@@ -389,16 +503,23 @@
         </div>
       </div>
 
-      <div class="action-btns">
-        <button class="action-btn" onclick="selectMember('both')">どちらも好き✨</button>
-        <button class="action-btn" onclick="selectMember('skip')">パス / スキップ</button>
+      <!-- 予選用アクションボタン -->
+      <div class="action-btns" id="preliminary-btns">
+        <button class="action-btn" onclick="reset4Selection()">やり直す</button>
+        <button class="action-btn confirm-btn" id="confirm-btn" onclick="confirm4Selection()" disabled>決定して次へ</button>
+      </div>
+
+      <!-- 本選用アクションボタン -->
+      <div class="action-btns hidden" id="final-btns">
+        <button class="action-btn" onclick="selectFinalMember('both')">どちらも好き✨</button>
+        <button class="action-btn" onclick="selectFinalMember('skip')">パス / スキップ</button>
       </div>
 
       <!-- 進捗プログレスバー -->
       <div class="progress-box">
         <div class="progress-info">
           <span id="progress-text">第 1 問目</span>
-          <span id="remaining-text">あと 60 問</span>
+          <span id="remaining-text">あと 40 問</span>
         </div>
         <div class="progress-bar-bg">
           <div class="progress-bar-fill" id="progress-bar-fill"></div>
@@ -408,7 +529,7 @@
 
     <!-- 結果画面（TOP5） -->
     <div id="result-screen" class="hidden">
-      <h2 style="text-align: center; font-size: 1.2rem; color: #ffffff;">✨ YOUR TOP 5 MEMBERS ✨</h2>
+      <h2 style="text-align: center; font-size: 1.15rem; color: #ffffff;">✨ YOUR TOP 5 MEMBERS ✨</h2>
       <div class="top5-grid" id="top5-container"></div>
       
       <!-- Xでシェアボタン -->
@@ -484,85 +605,170 @@
 
     let currentPhase = "preliminary"; 
     let pool = [];
-    let pair = [];
+    let current4Group = [];
+    let selected1st = null;
+    let selected2nd = null;
     let matchCount = 0;
-    let maxMatches = 60; // 予選60問
+    let maxMatches = 40; // 予選：全40問
+    let pairFinal = [];
     let top5Result = [];
     const K = 32;
 
     function startQuiz() {
       currentPhase = "preliminary";
       matchCount = 0;
-      maxMatches = 60;
-      pool = rawMembers.map(m => ({ ...m, rating: 1500, appearCount: 0 }));
+      maxMatches = 40; // 予選は40問
+      
+      // 全員ポイント0、登場回数0からスタート
+      pool = rawMembers.map(m => ({ ...m, score: 0, rating: 1500, appearCount: 0 }));
       
       document.getElementById("quiz-screen").classList.remove("hidden");
       document.getElementById("result-screen").classList.add("hidden");
-      document.getElementById("phase-badge").innerText = "🔥 予選：無差別ランダム総当たり";
-      
+      document.getElementById("grid-4-container").classList.remove("hidden");
+      document.getElementById("vs-container").classList.add("hidden");
+      document.getElementById("preliminary-btns").classList.remove("hidden");
+      document.getElementById("final-btns").classList.add("hidden");
+      document.getElementById("phase-badge").innerText = "🔥 予選：4名から1位(+3点)と2位(+1点)を選択";
+      document.getElementById("instruction-text").innerText = "好みの「1位」と「2位」を順番にタップ！";
+
+      nextMatch();
+    }
+
+    function nextMatch() {
+      if (currentPhase === "preliminary") {
+        if (matchCount >= maxMatches) {
+          startFinal();
+          return;
+        }
+
+        // 登場回数が少ないメンバーを優先抽出（均等に登場させる仕組み）
+        pool.sort((a, b) => a.appearCount - b.appearCount || Math.random() - 0.5);
+        current4Group = pool.slice(0, 4);
+
+        render4Grid();
+        reset4Selection();
+      } else {
+        // 本選 (一騎打ち：全20問)
+        if (matchCount >= maxMatches) {
+          showResult();
+          return;
+        }
+
+        let idx1 = Math.floor(Math.random() * pool.length);
+        let idx2;
+        do {
+          idx2 = Math.floor(Math.random() * pool.length);
+        } while (idx1 === idx2);
+
+        pairFinal = [pool[idx1], pool[idx2]];
+
+        setCardData('a', pairFinal[0]);
+        setCardData('b', pairFinal[1]);
+      }
+
+      matchCount++;
+      updateProgressBar();
+    }
+
+    function render4Grid() {
+      const container = document.getElementById("grid-4-container");
+      container.innerHTML = "";
+
+      current4Group.forEach((member, idx) => {
+        const card = document.createElement("div");
+        card.className = "card-4";
+        card.id = `card-4-${idx}`;
+        card.onclick = () => handle4CardClick(idx);
+
+        const imgHtml = member.img 
+          ? `<img src="${member.img}" alt="${member.name}" onerror="this.style.display='none'">`
+          : `<span style="font-size:0.6rem; color:#666;">No Img</span>`;
+
+        card.innerHTML = `
+          <div class="badge-selection" id="badge-${idx}">-</div>
+          <div class="img-box">${imgHtml}</div>
+          <div class="info-box">
+            <span class="group">${member.group}</span>
+            <span class="name">${member.name}</span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function handle4CardClick(idx) {
+      if (selected1st === idx) {
+        selected1st = selected2nd;
+        selected2nd = null;
+      } else if (selected2nd === idx) {
+        selected2nd = null;
+      } else {
+        if (selected1st === null) {
+          selected1st = idx;
+        } else if (selected2nd === null) {
+          selected2nd = idx;
+        } else {
+          selected1st = selected2nd;
+          selected2nd = idx;
+        }
+      }
+      update4GridUI();
+    }
+
+    function update4GridUI() {
+      current4Group.forEach((_, idx) => {
+        const card = document.getElementById(`card-4-${idx}`);
+        const badge = document.getElementById(`badge-${idx}`);
+        card.classList.remove("selected-1st", "selected-2nd");
+
+        if (selected1st === idx) {
+          card.classList.add("selected-1st");
+          badge.innerText = "1位 🥇";
+        } else if (selected2nd === idx) {
+          card.classList.add("selected-2nd");
+          badge.innerText = "2位 🥈";
+        }
+      });
+
+      document.getElementById("confirm-btn").disabled = !(selected1st !== null && selected2nd !== null);
+    }
+
+    function reset4Selection() {
+      selected1st = null;
+      selected2nd = null;
+      update4GridUI();
+    }
+
+    function confirm4Selection() {
+      if (selected1st === null || selected2nd === null) return;
+
+      // 1位に+3点、2位に+1点加点
+      current4Group[selected1st].score += 3;
+      current4Group[selected2nd].score += 1;
+
+      current4Group.forEach(m => m.appearCount++);
+
       nextMatch();
     }
 
     function startFinal() {
       currentPhase = "final";
       matchCount = 0;
-      maxMatches = 10; 
+      maxMatches = 20; // 本選：全20問
 
-      pool.sort((a, b) => b.rating - a.rating);
-      pool = pool.slice(0, 8).map(m => ({ ...m, rating: 1500, appearCount: 0 }));
+      // 予選スコア上位8名を選抜
+      pool.sort((a, b) => b.score - a.score || Math.random() - 0.5);
+      pool = pool.slice(0, 8).map(m => ({ ...m, rating: 1500 }));
 
-      document.getElementById("phase-badge").innerText = "✨ 本選：予選上位8名による最終選抜";
+      document.getElementById("grid-4-container").classList.add("hidden");
+      document.getElementById("vs-container").classList.remove("hidden");
+      document.getElementById("preliminary-btns").classList.add("hidden");
+      document.getElementById("final-btns").classList.remove("hidden");
+      
+      document.getElementById("phase-badge").innerText = "✨ 本選：予選上位8名による1対1決戦 (全20問)";
+      document.getElementById("instruction-text").innerText = "1位（より好きな方）をタップして選抜！";
+
       nextMatch();
-    }
-
-    function nextMatch() {
-      if (matchCount >= maxMatches) {
-        if (currentPhase === "preliminary") {
-          startFinal();
-        } else {
-          showResult();
-        }
-        return;
-      }
-
-      // 登場回数が少ないメンバーを優先して選出（全員必ず1回以上保証）
-      pool.sort((a, b) => a.appearCount - b.appearCount || Math.random() - 0.5);
-
-      let idx1 = 0;
-      let idx2 = 1;
-
-      // 予選後半はできるだけレートが近いメンバーをぶつける
-      if (currentPhase === "preliminary" && matchCount > 30) {
-        let minDiff = Infinity;
-        for (let i = 1; i < pool.length; i++) {
-          let diff = Math.abs(pool[0].rating - pool[i].rating);
-          if (diff < minDiff) {
-            minDiff = diff;
-            idx2 = i;
-          }
-        }
-      } else {
-        // ランダム要素を入れる
-        idx2 = Math.floor(Math.random() * (pool.length - 1)) + 1;
-      }
-
-      pair = [pool[idx1], pool[idx2]];
-
-      setCardData('a', pair[0]);
-      setCardData('b', pair[1]);
-
-      matchCount++;
-      updateProgressBar();
-    }
-
-    function updateProgressBar() {
-      const currentQ = matchCount;
-      const remainingQ = maxMatches - matchCount;
-      const percent = (currentQ / maxMatches) * 100;
-
-      document.getElementById("progress-text").innerText = `第 ${currentQ} 問目`;
-      document.getElementById("remaining-text").innerText = `あと ${remainingQ} 問`;
-      document.getElementById("progress-bar-fill").style.width = `${percent}%`;
     }
 
     function setCardData(cardKey, member) {
@@ -577,9 +783,9 @@
       }
     }
 
-    function selectMember(action) {
-      const p1 = pair[0];
-      const p2 = pair[1];
+    function selectFinalMember(action) {
+      const p1 = pairFinal[0];
+      const p2 = pairFinal[1];
       const Ra = p1.rating;
       const Rb = p2.rating;
       const Ea = 1 / (1 + Math.pow(10, (Rb - Ra) / 400));
@@ -596,10 +802,17 @@
         p2.rating = Rb + K * (0.5 - Eb);
       }
 
-      p1.appearCount++;
-      p2.appearCount++;
-
       nextMatch();
+    }
+
+    function updateProgressBar() {
+      const currentQ = matchCount;
+      const remainingQ = maxMatches - matchCount;
+      const percent = (currentQ / maxMatches) * 100;
+
+      document.getElementById("progress-text").innerText = `第 ${currentQ} 問目`;
+      document.getElementById("remaining-text").innerText = `あと ${remainingQ} 問`;
+      document.getElementById("progress-bar-fill").style.width = `${percent}%`;
     }
 
     function showResult() {
