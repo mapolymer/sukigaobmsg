@@ -39,7 +39,7 @@
       position: relative;
     }
 
-    /* 背景アニメーション粒子 */
+    /* 背景粒子 */
     body::before {
       content: "";
       position: absolute;
@@ -121,7 +121,6 @@
       transition: all 0.2s ease;
       padding: 8px;
       overflow: hidden;
-      user-select: none;
     }
 
     .card:active {
@@ -194,6 +193,7 @@
       border-color: var(--gold-2);
     }
 
+    /* プログレスバーエリア */
     .progress-box {
       width: 100%;
       margin-top: 8px;
@@ -225,7 +225,7 @@
       box-shadow: 0 0 8px rgba(255, 229, 153, 0.5);
     }
 
-    /* TOP5 結果画面レイアウト */
+    /* TOP5 グリッドレイアウト */
     .top5-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -366,7 +366,7 @@
 
     <!-- 診断画面 -->
     <div id="quiz-screen" style="text-align: center;">
-      <span class="phase-badge" id="phase-badge">🔥 予選：全員登場・全45問</span>
+      <span class="phase-badge" id="phase-badge">🔥 予選：無差別ランダム総当たり</span>
       
       <div class="vs-container">
         <div id="card-a" class="card" onclick="selectMember('a')">
@@ -398,7 +398,7 @@
       <div class="progress-box">
         <div class="progress-info">
           <span id="progress-text">第 1 問目</span>
-          <span id="remaining-text">あと 45 問</span>
+          <span id="remaining-text">あと 60 問</span>
         </div>
         <div class="progress-bar-bg">
           <div class="progress-bar-fill" id="progress-bar-fill"></div>
@@ -486,25 +486,19 @@
     let pool = [];
     let pair = [];
     let matchCount = 0;
-    let maxMatches = 45; // 予選45問設定
+    let maxMatches = 60; // 予選60問
     let top5Result = [];
     const K = 32;
 
     function startQuiz() {
       currentPhase = "preliminary";
       matchCount = 0;
-      maxMatches = 45;
-      
-      // 全員に初期レートと登場回数カウント(appearCount)をセット
-      pool = rawMembers.map(m => ({ 
-        ...m, 
-        rating: 1500,
-        appearCount: 0 
-      }));
+      maxMatches = 60;
+      pool = rawMembers.map(m => ({ ...m, rating: 1500, appearCount: 0 }));
       
       document.getElementById("quiz-screen").classList.remove("hidden");
       document.getElementById("result-screen").classList.add("hidden");
-      document.getElementById("phase-badge").innerText = "🔥 予選：全員登場・全45問";
+      document.getElementById("phase-badge").innerText = "🔥 予選：無差別ランダム総当たり";
       
       nextMatch();
     }
@@ -512,15 +506,10 @@
     function startFinal() {
       currentPhase = "final";
       matchCount = 0;
-      maxMatches = 10; // 本選は10問
+      maxMatches = 10; 
 
-      // レーティング上位8名を選出しリセットして決勝
       pool.sort((a, b) => b.rating - a.rating);
-      pool = pool.slice(0, 8).map(m => ({ 
-        ...m, 
-        rating: 1500,
-        appearCount: 0 
-      }));
+      pool = pool.slice(0, 8).map(m => ({ ...m, rating: 1500, appearCount: 0 }));
 
       document.getElementById("phase-badge").innerText = "✨ 本選：予選上位8名による最終選抜";
       nextMatch();
@@ -536,40 +525,28 @@
         return;
       }
 
-      let m1, m2;
+      // 登場回数が少ないメンバーを優先して選出（全員必ず1回以上保証）
+      pool.sort((a, b) => a.appearCount - b.appearCount || Math.random() - 0.5);
 
-      if (currentPhase === "preliminary") {
-        // 未登場または登場回数が少ないメンバーを優先的に選出
-        // 登場回数昇順でソート（同じ回数の場合はランダムにシャッフル）
-        let sortedPool = [...pool].sort((a, b) => {
-          if (a.appearCount === b.appearCount) {
-            return Math.random() - 0.5;
+      let idx1 = 0;
+      let idx2 = 1;
+
+      // 予選後半はできるだけレートが近いメンバーをぶつける
+      if (currentPhase === "preliminary" && matchCount > 30) {
+        let minDiff = Infinity;
+        for (let i = 1; i < pool.length; i++) {
+          let diff = Math.abs(pool[0].rating - pool[i].rating);
+          if (diff < minDiff) {
+            minDiff = diff;
+            idx2 = i;
           }
-          return a.appearCount - b.appearCount;
-        });
-
-        // 最も登場回数が少ないメンバーを1人目に確定
-        m1 = sortedPool[0];
-
-        // 2人目: まだ対戦していない（または登場回数が少ない）他のメンバーから選定
-        let candidates = sortedPool.slice(1);
-        m2 = candidates[0];
+        }
       } else {
-        // 本選: 完全ランダム対戦
-        let idx1 = Math.floor(Math.random() * pool.length);
-        let idx2;
-        do {
-          idx2 = Math.floor(Math.random() * pool.length);
-        } while (idx1 === idx2);
-        m1 = pool[idx1];
-        m2 = pool[idx2];
+        // ランダム要素を入れる
+        idx2 = Math.floor(Math.random() * (pool.length - 1)) + 1;
       }
 
-      // 出場回数をインクリメント
-      m1.appearCount++;
-      m2.appearCount++;
-
-      pair = [m1, m2];
+      pair = [pool[idx1], pool[idx2]];
 
       setCardData('a', pair[0]);
       setCardData('b', pair[1]);
@@ -618,6 +595,9 @@
         p1.rating = Ra + K * (0.5 - Ea);
         p2.rating = Rb + K * (0.5 - Eb);
       }
+
+      p1.appearCount++;
+      p2.appearCount++;
 
       nextMatch();
     }
@@ -668,10 +648,7 @@
       window.open(shareUrl, '_blank');
     }
 
-    // アプリケーション起動
-    window.onload = function() {
-      startQuiz();
-    };
+    startQuiz();
   </script>
 </body>
 </html>
