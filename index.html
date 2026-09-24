@@ -131,20 +131,22 @@
 
     .card .img-box {
       width: 100%;
-      height: 200px; /* 画像エリアを拡大 */
+      height: 200px;
       background: #18181c;
       border-radius: 10px;
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
+      color: #555;
+      font-size: 0.75rem;
     }
 
     .card img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: top center; /* 顔を中心に配置 */
+      object-position: top center;
     }
 
     .card .info-box {
@@ -193,40 +195,67 @@
       border-color: var(--gold-2);
     }
 
-    /* TOP5 結果 */
-    .top5-list {
+    /* TOP5 グリッドレイアウト */
+    .top5-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    /* 1位（NO.1）は全幅表示で豪華に */
+    .top5-card {
+      background: rgba(20, 20, 25, 0.95);
+      border: 1px solid rgba(197, 160, 89, 0.3);
+      border-radius: 14px;
+      padding: 10px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      margin-top: 14px;
-    }
-
-    .top5-item {
-      display: flex;
       align-items: center;
-      background: rgba(20, 20, 25, 0.9);
-      border: 1px solid rgba(197, 160, 89, 0.3);
-      padding: 8px 12px;
-      border-radius: 12px;
-      gap: 12px;
+      position: relative;
+      overflow: hidden;
     }
 
-    .top5-rank {
-      font-size: 1.2rem;
+    .top5-card.rank-1 {
+      grid-column: span 2;
+      border-color: var(--gold-1);
+      box-shadow: 0 0 15px rgba(255, 229, 153, 0.25);
+      background: linear-gradient(180deg, rgba(35, 30, 20, 0.95) 0%, rgba(20, 20, 25, 0.95) 100%);
+    }
+
+    .top5-rank-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: linear-gradient(135deg, var(--gold-2), var(--gold-3));
+      color: #fff;
+      font-size: 0.75rem;
       font-weight: 800;
-      color: var(--gold-1);
-      width: 28px;
-      text-align: center;
+      padding: 2px 8px;
+      border-radius: 12px;
+      z-index: 2;
+    }
+
+    .rank-1 .top5-rank-badge {
+      background: linear-gradient(135deg, #ffffff, var(--gold-1));
+      color: #000;
+      font-size: 0.85rem;
     }
 
     .top5-img-box {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
+      width: 100%;
+      height: 140px;
+      border-radius: 10px;
       overflow: hidden;
-      border: 2px solid var(--gold-2);
       background: #111;
-      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    .rank-1 .top5-img-box {
+      height: 200px;
     }
 
     .top5-img-box img {
@@ -237,20 +266,27 @@
     }
 
     .top5-info {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .top5-name {
-      font-size: 1rem;
-      font-weight: 800;
-      color: #ffffff;
+      text-align: center;
+      width: 100%;
     }
 
     .top5-group {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       color: var(--gold-2);
       font-weight: 700;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .top5-name {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #ffffff;
+      word-break: break-word;
+    }
+
+    .rank-1 .top5-name {
+      font-size: 1.15rem;
     }
 
     .hidden { display: none !important; }
@@ -282,14 +318,18 @@
       
       <div class="vs-container">
         <div id="card-a" class="card" onclick="selectMember('a')">
-          <div class="img-box"><img id="img-a" src="" alt="" style="display:none;"></div>
+          <div class="img-box">
+            <img id="img-a" src="" alt="" style="display:none;" onerror="this.style.display='none';">
+          </div>
           <div class="info-box">
             <span class="group" id="group-a">-</span>
             <span class="name" id="name-a">-</span>
           </div>
         </div>
         <div id="card-b" class="card" onclick="selectMember('b')">
-          <div class="img-box"><img id="img-b" src="" alt="" style="display:none;"></div>
+          <div class="img-box">
+            <img id="img-b" src="" alt="" style="display:none;" onerror="this.style.display='none';">
+          </div>
           <div class="info-box">
             <span class="group" id="group-b">-</span>
             <span class="name" id="name-b">-</span>
@@ -308,22 +348,21 @@
     <!-- 結果画面（TOP5） -->
     <div id="result-screen" class="hidden">
       <h2 style="text-align: center; font-size: 1.2rem; color: #ffffff;">✨ YOUR TOP 5 MEMBERS ✨</h2>
-      <div class="top5-list" id="top5-container"></div>
+      <div class="top5-grid" id="top5-container"></div>
       <button class="reset-btn" onclick="startQuiz()">もう一度診断する</button>
     </div>
   </div>
 
   <script>
     const rawMembers = [
-      // BE:FIRST (7)
+      // BE:FIRST (6名)
       { name: "SOTA", group: "BE:FIRST", img: "sota.jpg" },
       { name: "SHUNTO", group: "BE:FIRST", img: "shunto.jpg" },
       { name: "MANATO", group: "BE:FIRST", img: "manato.jpg" },
       { name: "RYUHEI", group: "BE:FIRST", img: "ryuhei.jpg" },
       { name: "JUNON", group: "BE:FIRST", img: "junon.jpg" },
-      { name: "RYOKI", group: "BE:FIRST", img: "ryoki.jpg" },
       { name: "LEO", group: "BE:FIRST", img: "leo.jpg" },
-      // MAZZEL (8)
+      // MAZZEL (8名)
       { name: "KAIRYU", group: "MAZZEL", img: "kairyu.jpg" },
       { name: "NAOYA", group: "MAZZEL", img: "naoya.jpg" },
       { name: "RAN", group: "MAZZEL", img: "ran.jpg" },
@@ -332,45 +371,45 @@
       { name: "TAKUTO", group: "MAZZEL", img: "takuto.jpg" },
       { name: "HAYATO", group: "MAZZEL", img: "hayato.jpg" },
       { name: "EIKI", group: "MAZZEL", img: "eiki.jpg" },
-      // STARGLOW (5)
-      { name: "RUI", group: "STARGLOW", img: "" },
-      { name: "TAIKI", group: "STARGLOW", img: "" },
-      { name: "KANON", group: "STARGLOW", img: "" },
-      { name: "GOICHI", group: "STARGLOW", img: "" },
-      { name: "ADAM", group: "STARGLOW", img: "" },
-      // TRAINEE (20)
-      { name: "YUTA", group: "TRAINEE", img: "" },
-      { name: "KEI", group: "TRAINEE", img: "" },
-      { name: "RAIKI", group: "TRAINEE", img: "" },
-      { name: "TAICHI", group: "TRAINEE", img: "" },
-      { name: "KANTA", group: "TRAINEE", img: "" },
-      { name: "REN", group: "TRAINEE", img: "" },
-      { name: "KAIRI", group: "TRAINEE", img: "" },
-      { name: "KEITO", group: "TRAINEE", img: "" },
-      { name: "COTA", group: "TRAINEE", img: "" },
-      { name: "RYOMA", group: "TRAINEE", img: "" },
-      { name: "AOI", group: "TRAINEE", img: "" },
-      { name: "HAL", group: "TRAINEE", img: "" },
-      { name: "YU", group: "TRAINEE", img: "" },
-      { name: "KEISHIN", group: "TRAINEE", img: "" },
-      { name: "RYOTO", group: "TRAINEE", img: "" },
-      { name: "ISANA", group: "TRAINEE", img: "" },
-      { name: "LEON", group: "TRAINEE", img: "" },
-      { name: "KAITO", group: "TRAINEE", img: "" },
-      { name: "TOMOKI", group: "TRAINEE", img: "" },
-      { name: "REN.N", group: "TRAINEE", img: "" },
-      { name: "YAMATO", group: "TRAINEE", img: "" },
-      { name: "MITSUHIKO", group: "TRAINEE", img: "" },
-      { name: "TERUHIKO", group: "TRAINEE", img: "" },
-      // SOLO / BMSG (8)
-      { name: "Novel Core", group: "SOLO", img: "" },
-      { name: "Aile The Shota", group: "SOLO", img: "" },
-      { name: "edhiii boi", group: "SOLO", img: "" },
-      { name: "REIKO", group: "SOLO", img: "" },
-      { name: "Ayumu Imazu", group: "SOLO", img: "" },
-      { name: "banvox", group: "SOLO", img: "" },
-      { name: "SALU", group: "SOLO", img: "" },
-      { name: "SKY-HI", group: "BMSG", img: "" }
+      // STARGLOW (5名)
+      { name: "RUI", group: "STARGLOW", img: "rui.jpg" },
+      { name: "TAIKI", group: "STARGLOW", img: "taiki.jpg" },
+      { name: "KANON", group: "STARGLOW", img: "kanon.jpg" },
+      { name: "GOICHI", group: "STARGLOW", img: "goichi.jpg" },
+      { name: "ADAM", group: "STARGLOW", img: "adam.jpg" },
+      // TRAINEE (23名)
+      { name: "YUTA", group: "TRAINEE", img: "yuta.png" },
+      { name: "KEI", group: "TRAINEE", img: "kei.png" },
+      { name: "RAIKI", group: "TRAINEE", img: "raiki.png" },
+      { name: "TAICHI", group: "TRAINEE", img: "taichi.png" },
+      { name: "KANTA", group: "TRAINEE", img: "kanta.png" },
+      { name: "REN", group: "TRAINEE", img: "ren.png" },
+      { name: "KAIRI", group: "TRAINEE", img: "kairi.png" },
+      { name: "KEITO", group: "TRAINEE", img: "keito.png" },
+      { name: "COTA", group: "TRAINEE", img: "cota.png" },
+      { name: "RYOMA", group: "TRAINEE", img: "ryoma.png" },
+      { name: "AOI", group: "TRAINEE", img: "aoi.png" },
+      { name: "HAL", group: "TRAINEE", img: "hal.png" },
+      { name: "YU", group: "TRAINEE", img: "yu.png" },
+      { name: "KEISHIN", group: "TRAINEE", img: "keishin.png" },
+      { name: "RYOTO", group: "TRAINEE", img: "ryoto.png" },
+      { name: "ISANA", group: "TRAINEE", img: "isana.png" },
+      { name: "LEON", group: "TRAINEE", img: "leon.png" },
+      { name: "KAITO", group: "TRAINEE", img: "kaito.png" },
+      { name: "TOMOKI", group: "TRAINEE", img: "tomoki.png" },
+      { name: "REN.N", group: "TRAINEE", img: "ren-n.png" },
+      { name: "YAMATO", group: "TRAINEE", img: "yamato.png" },
+      { name: "MITSUHIKO", group: "TRAINEE", img: "mitsuhiko.png" },
+      { name: "TERUHIKO", group: "TRAINEE", img: "teruhiko.png" },
+      // SOLO / BMSG (8名)
+      { name: "Novel Core", group: "SOLO", img: "novelcore.jpg" },
+      { name: "Aile The Shota", group: "SOLO", img: "ailetheshota.jpg" },
+      { name: "edhiii boi", group: "SOLO", img: "edhiiiboi.jpg" },
+      { name: "REIKO", group: "SOLO", img: "reiko.jpg" },
+      { name: "Ayumu Imazu", group: "SOLO", img: "ayumuimazu.jpg" },
+      { name: "banvox", group: "SOLO", img: "banvox.jpg" },
+      { name: "SALU", group: "SOLO", img: "salu.png" },
+      { name: "SKY-HI", group: "BMSG", img: "skyhi.jpg" }
     ];
 
     const groups = ["BE:FIRST", "MAZZEL", "STARGLOW", "TRAINEE", "SOLO/BMSG"];
@@ -496,18 +535,19 @@
 
       top5.forEach((item, index) => {
         const div = document.createElement("div");
-        div.className = "top5-item";
+        const rankNum = index + 1;
+        div.className = `top5-card ${rankNum === 1 ? 'rank-1' : ''}`;
         
         const imgHtml = item.img 
-          ? `<img src="${item.img}" alt="${item.name}">` 
-          : `<span style="font-size:0.65rem; color:#666; display:flex; align-items:center; justify-content:center; height:100%;">No Img</span>`;
+          ? `<img src="${item.img}" alt="${item.name}" onerror="this.style.display='none'">` 
+          : `<span style="font-size:0.65rem; color:#666;">No Img</span>`;
 
         div.innerHTML = `
-          <div class="top5-rank">#${index + 1}</div>
+          <div class="top5-rank-badge">#${rankNum}</div>
           <div class="top5-img-box">${imgHtml}</div>
           <div class="top5-info">
-            <span class="top5-name">${item.name}</span>
             <span class="top5-group">${item.group}</span>
+            <span class="top5-name">${item.name}</span>
           </div>
         `;
         top5Container.appendChild(div);
