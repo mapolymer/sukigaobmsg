@@ -467,6 +467,17 @@
       margin-top: 6px;
       text-decoration: underline;
     }
+
+    footer {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 0.65rem;
+      color: #777777;
+      line-height: 1.4;
+      padding: 0 10px;
+      position: relative;
+      z-index: 1;
+    }
   </style>
 </head>
 <body>
@@ -505,7 +516,7 @@
         </div>
       </div>
 
-      <!-- 予選用アクションボタン（スキップ追加） -->
+      <!-- 予選用アクションボタン -->
       <div class="action-btns" id="preliminary-btns">
         <button class="action-btn skip-btn" onclick="skip4Selection()">全員スキップ ➔</button>
         <button class="action-btn" onclick="reset4Selection()">リセット</button>
@@ -542,10 +553,19 @@
         </svg>
         X (旧Twitter) で結果をシェア
       </button>
+      <p style="font-size: 0.65rem; color: #888888; text-align: center; margin-top: 6px;">
+        ※Xの仕様上、テキストのみがシェアされます（画像は自動添付されません）。
+      </p>
 
       <button class="reset-btn" onclick="startQuiz()">最初からやり直す</button>
     </div>
   </div>
+
+  <!-- 非公式注記フッター -->
+  <footer>
+    ※当サイトは個人のファンが制作した非公式コンテンツです。<br>
+    所属事務所・アーティスト本人様とは一切関係ありません。
+  </footer>
 
   <script>
     const rawMembers = [
